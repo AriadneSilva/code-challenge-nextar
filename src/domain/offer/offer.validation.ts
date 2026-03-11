@@ -14,7 +14,7 @@ export function validateDiscountPercentage(discountPercentage: number) {
 }
 
 export function validateDates(startDate: Date, endDate: Date) {
-  if (startDate <= endDate) {
+  if (endDate <= startDate) {
     throw new Error("Data inicial não pode ser maior que a data final");
   }
 }
