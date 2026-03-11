@@ -1,12 +1,14 @@
+export type OfferStatus = "active" | "scheduled" | "expired";
+
 export type Offer = {
   id: string;
   title: string;
   price: number;
-  discount: number;
+  discountPercentage: number;
   stock: number;
   version: number;
   startDate: Date;
   endDate: Date;
   updatedAt: Date;
-  status: "active" | "scheduled" | "expired";
+  status: OfferStatus;
 };
