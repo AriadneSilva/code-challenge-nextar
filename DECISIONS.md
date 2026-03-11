@@ -17,13 +17,13 @@ O objetivo é demonstrar o raciocínio de engenharia aplicado para resolver os p
     O Type Offer foi modelada considerando o contexto e regras de negócio do problema:
 
     - Id: identificador da oferta
-    - Name: nome da oferta
+    - Title: nome da oferta
     - Price: preço original da oferta
     - Discount: percentual de desconto oferecido
-    - Qnt: quantidade disponível no estoque
+    - Stock: quantidade disponível no estoque
     - Version: versão atual para controle de atualizações concorrentes
     - StartDate e EndDate: janela de tempo da oferta disponibilizada
-    - UpdateAt: Informações sobre a ultima atualização realizada
+    - UpdateAt: Informações sobre a data da ultima atualização realizada
     - Status: situação da oferta, para evitar o recálculo
 
 ### Trade-offs

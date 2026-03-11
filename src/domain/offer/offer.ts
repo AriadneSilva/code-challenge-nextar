@@ -1,12 +1,12 @@
 export type Offer = {
   id: string;
-  name: string;
+  title: string;
   price: number;
   discount: number;
-  qnt: number;
+  stock: number;
   version: number;
   startDate: Date;
   endDate: Date;
-  updatedAt: string;
-  status: "ativa" | "agendada" | "expirada";
+  updatedAt: Date;
+  status: "active" | "scheduled" | "expired";
 };
