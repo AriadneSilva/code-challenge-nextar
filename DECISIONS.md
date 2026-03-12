@@ -45,4 +45,53 @@ O objetivo é demonstrar o raciocínio de engenharia aplicado para resolver os p
         - validação da situação do estoque 
         - validação se existe determinado um valor de desconto
         - validação se as datas iniciais e finais são diferentes
-        
+
+
+---
+
+## State Management Strategy
+
+### Contexto
+    A aplicação precisa controlar as re-renderizações da interface considerando que as ofertas:
+    - Podem sofrer atualizações frequente por diferentes usuários
+    - Sofrem alterações no estoque a medida que vão saindo
+    - Expiram depois de determinado tempo
+
+    Para isso, há a necessidade de gerenciar corretamente o estado global de ofertas de maneira que os componentes consigam ler e modificar os dados de forma dinâmica e consistente
+
+### Decisão
+
+    Foi utilizado o Zustand como biblioteca de gerenciamento de estado global, conforme solicitado diretamente no documento do desafio
+
+---
+
+## Store Architecture
+
+### Contexto
+
+    A arquitetura escolhida foi uma arquitetura modular,facilitando a compreensão do estado da aplicação e o funcionamento da biblioteca, além de garantir melhor escalabilidade e facilidade em manutenções futuras.
+
+### Decisão
+
+A store foi dividida em diferentes arquivos com responsabilidades específicas:
+
+- **store**: definição do estado global e integração das actions
+- **actions**: funções responsáveis por modificar o estado
+- **selectors**: funções utilizadas para leitura otimizada do estado
+- **types**: definição dos tipos utilizados pela store
+
+Estrutura adotada:
+
+
+## Custom Hooks Strategy
+
+### Contexto
+
+    Os componentes da interface precisarão ter acesso aos estados e também realizar as ações necessárias para funcionamento da aplicação.
+    
+    O hook da aplicação foi criado para encapslular o acesso aos estados das variaveis e manter as ações que a aplicação precisará realizar. Dessa forma evita que os componentes acessem ou alteraem diretamente a store global.
+
+### Decisão
+
+Foi implementado o hook `useOffers` para realizar o controle, permitindo que a aplicação fique mais organizada, reduza o acoplamento entre UI e o gerencimento implementado com o Zustand, e facilite testes e manutenções futuras
+
