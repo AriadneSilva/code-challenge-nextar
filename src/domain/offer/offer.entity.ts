@@ -4,6 +4,7 @@ export type Offer = {
   id: string;
   title: string;
   price: number;
+  urlImage: string;
   discountPercentage: number;
   stock: number;
   version: number;
