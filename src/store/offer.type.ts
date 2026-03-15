@@ -5,4 +5,7 @@ export type OfferState = {
   selectedOffer: Offer | null;
   isLoading: boolean;
   error: string | null;
+
+  fetchAllOffers: () => Promise<void>;
+  cancelOffer: (id: string) => Promise<void>;
 };

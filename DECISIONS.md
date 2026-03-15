@@ -95,3 +95,29 @@ Estrutura adotada:
 
 Foi implementado o hook `useOffers` para realizar o controle, permitindo que a aplicação fique mais organizada, reduza o acoplamento entre UI e o gerencimento implementado com o Zustand, e facilite testes e manutenções futuras
 
+---
+
+## API Layer Simulation Strategy
+
+### Contexto
+
+    Entre as regras do desafio, é citado a necessidade de lidar com a sicronização de dados e atualizações considerando uma integração com o AWS Amplify.
+
+    Mesmo não sendo disponibilizado nenhum endpoint para ser utilizado o backend, optei por criar a estrutura completa de comunição com backend caso haja integração futura.
+        
+
+### Decisão
+
+    Foi criada uma pasta `api` responsável por simular uma camada de comunicação com backend, contendo funções assíncronas responsáveis por manipular os dados das ofertas, simulando chamadas de rede com possivel delays inclusive.
+
+    Funções implementadas:
+
+    - fetchAllOffers
+    
+    Essas funções utilizam os dados mockados da aplicação, retornando Promises e simulando latência de rede assim a aplicação interage com os dados como se estivesse consumindo um backend real.
+
+### Trade-offs
+
+    A api foi criada para manter a separação clara entre a interface do usuário, o gerenciamento dos estados e o acesso aos dados.
+    Dessa forma seguindo todas as decisões anteriormente tomadas no projeto, fica garantido a organização e facilidade em futuras modificações do projeto e até mesmo adaptação de back end com o AWS Amplify.
+    

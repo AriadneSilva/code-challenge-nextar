@@ -3,8 +3,10 @@ import { mockOffers } from "../../mocks/offer.mock";
 import { Header } from "../../components/Header";
 import { Metrics } from "../../components/Metrics";
 import { Filter } from "../../components/Filter";
+import { useOffer } from "../../hooks/useOffer";
 
 export function Dashboard() {
+  const { listOffers } = useOffer();
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -17,7 +19,7 @@ export function Dashboard() {
           <Filter />
         </section>
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {mockOffers.map((offer) => (
+          {listOffers.map((offer) => (
             <Card key={offer.id} offerData={offer} />
           ))}
         </section>
