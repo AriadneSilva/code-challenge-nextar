@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { OfferState } from "./offer.type";
 import type { OfferAction } from "./offer.action";
-import { fetchAllOffers, cancelOffer } from "../api/offerApi";
+import { fetchAllOffers, cancelOffer } from "../api/offerAPI";
 
 type OfferStore = OfferState & OfferAction;
 
