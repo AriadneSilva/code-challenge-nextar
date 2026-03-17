@@ -78,16 +78,19 @@ export function ImageContainer({
         >
           {discount}% OFF
         </div>
-
-        <img
-          src={urlImage}
-          alt={imgTitle}
-          className="
+        {urlImage != "" ? (
+          <img
+            src={urlImage}
+            alt={imgTitle}
+            className="
           w-36
           object-contain
           drop-shadow-[0_40px_30px_rgba(0,0,0,0.35)]
           "
-        />
+          />
+        ) : (
+          "NO IMAGE"
+        )}
       </div>
     </>
   );

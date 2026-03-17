@@ -4,7 +4,7 @@ export type Offer = {
   id: string;
   title: string;
   price: number;
-  urlImage: string;
+  urlImage: string | "";
   discountPercentage: number;
   stock: number;
   version: number;
@@ -13,3 +13,5 @@ export type Offer = {
   updatedAt: Date;
   status: OfferStatus;
 };
+
+export type OfferFormData = Omit<Offer, "updatedAt">;

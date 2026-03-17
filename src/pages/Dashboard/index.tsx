@@ -4,8 +4,10 @@ import { Metrics } from "../../components/Metrics";
 import { Filter } from "../../components/Filter";
 import { useOffer } from "../../hooks/useOffer";
 import { Modal } from "../../components/Modal";
+
 export function Dashboard() {
-  const { listOffers, isModalOpen, selectedOffer } = useOffer();
+  const { filteredOffers } = useOffer();
+
   return (
     <>
       <div className="min-h-screen bg-gray-100">
@@ -18,7 +20,7 @@ export function Dashboard() {
             <Filter />
           </section>
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {listOffers.map((offer) => (
+            {filteredOffers.map((offer) => (
               <Card key={offer.id} offerData={offer} />
             ))}
           </section>

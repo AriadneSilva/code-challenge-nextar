@@ -12,20 +12,20 @@ export function Container({ offerData }: Props) {
         {offerData.title}
       </h3>
 
-      <span className="text-gray-400 line-through">${offerData.price}</span>
+      <span className="text-gray-400 line-through">R$ {offerData.price}</span>
 
       <span className="text-3xl font-bold text-blue-600 mb-2">
-        ${calculateDiscount(offerData.price, offerData.discountPercentage)}
+        R$ {calculateDiscount(offerData.price, offerData.discountPercentage)}
       </span>
 
-      <span className="text-gray-500 mb-3">Stock: {offerData.stock}</span>
+      <span className="text-gray-500 mb-3">Estoque: {offerData.stock}</span>
 
       <div className="flex items-center gap-3 mb-4">
         <span className="text-gray-500">Expires in:</span>
 
-        <span className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+        {/* <span className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
           {offerData.endDate.toDateString()}
-        </span>
+        </span> */}
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 // components/OfferForm/index.tsx
 
 import { useState } from "react";
-import type { Offer } from "../../domain/offer/offer.entity";
+import type { Offer, OfferFormData } from "../../domain/offer/offer.entity";
 import { useOffer } from "../../hooks/useOffer";
 
 type Props = {
@@ -12,25 +12,49 @@ type Props = {
 export function FormOffer({ initialOfferData, onSuccess }: Props) {
   const { createOffer, updateOffer } = useOffer();
 
-  const [title, setTitle] = useState(initialOfferData?.title || "");
-  const [price, setPrice] = useState(initialOfferData?.price || 0);
-  const [discount, setDiscount] = useState(
-    initialOfferData?.discountPercentage || 0,
-  );
+  const [formDataOffer, setFormDataOffer] = useState<OfferFormData>({
+    id: initialOfferData?.id || "",
+    version: initialOfferData?.version || 0,
+    title: initialOfferData?.title || "",
+    price: initialOfferData?.price || 0,
+    urlImage: initialOfferData?.urlImage || "",
+    discountPercentage: initialOfferData?.discountPercentage || 0,
+    stock: initialOfferData?.stock || 0,
+    startDate: initialOfferData?.startDate || new Date(),
+    endDate: initialOfferData?.endDate || new Date(),
+    status: initialOfferData?.status || "active",
+  });
+
+  function parseValue(name: string, value: string) {
+    if (["price", "discountPercentage", "stock", "version"].includes(name)) {
+      return Number(value);
+    }
+
+    if (["startDate", "endDate"].includes(name)) {
+      return new Date(value);
+    }
+
+    return value;
+  }
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) {
+    const { name, value } = e.target;
+
+    setFormDataOffer((prev) => ({
+      ...prev,
+      [name]: parseValue(name, value),
+    }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const payload = {
-      title,
-      price,
-      discountPercentage: discount,
-    };
-
     if (initialOfferData) {
-      await updateOffer(initialOfferData.id, payload);
+      await updateOffer(formDataOffer as Offer);
     } else {
-      // await createOffer(payload);
+      await createOffer(formDataOffer as Offer);
     }
 
     onSuccess?.();
@@ -40,10 +64,10 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <input
         placeholder="Title"
-        value={initialOfferData?.title}
-        onChange={(e) => setTitle(e.target.value)}
+        name="title"
+        value={formDataOffer.title}
+        onChange={handleChange}
         className="border p-2 rounded"
-        disabled={true}
       />
       <div className="flex flex-row gap-1">
         <div className="flex flex-col mr-2">
@@ -55,10 +79,10 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
               Preço
             </label>
             <input
-              type="number"
               placeholder="Price"
-              value={initialOfferData?.price}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              name="price"
+              value={formDataOffer.price}
+              onChange={handleChange}
               className="w-[154px] border p-2 rounded "
             />
           </div>
@@ -66,16 +90,16 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col">
           <div>
             <label
-              htmlFor="price"
+              htmlFor="discount"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Desconto (%)
             </label>
             <input
-              type="number"
-              placeholder="Price"
-              value={initialOfferData?.discountPercentage}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              placeholder="Discount"
+              name="discountPercentage"
+              value={formDataOffer.discountPercentage}
+              onChange={handleChange}
               className="w-[154px] border p-2 rounded"
             />
           </div>
@@ -86,16 +110,16 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col mr-2">
           <div>
             <label
-              htmlFor="price"
+              htmlFor="stock"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Qnt em Estoque
             </label>
             <input
-              type="number"
-              placeholder="Price"
-              value={initialOfferData?.stock}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              placeholder="Stock"
+              name="stock"
+              value={formDataOffer.stock}
+              onChange={handleChange}
               className="w-[154px]  border p-2 rounded"
             />
           </div>
@@ -103,80 +127,21 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col">
           <div>
             <label
-              htmlFor="price"
+              htmlFor="Status"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Status
             </label>
-            <button
-              id="dropdownDefaultButton"
-              data-dropdown-toggle="dropdown"
-              //className="inline-flex items-center justify-center text-black bg-brand box-border border hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-              className="inline-flex items-center justify-center text-black bg-brand box-border border hover:bg-brand-strong focus:ring-1 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-sm px-4 py-2.5 focus:outline-none"
-              type="button"
+            <select
+              name="status"
+              value={formDataOffer.status}
+              onChange={handleChange}
+              className="border p-2 rounded w-[150px]"
             >
-              {initialOfferData?.status}
-              <svg
-                className="w-4 h-4 ms-1.5 -me-0.5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 9-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            <div
-              id="dropdown"
-              className="z-10 hidden rounded bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44"
-            >
-              <ul
-                className="p-2 text-sm font-medium"
-                aria-labelledby="dropdownDefaultButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Earnings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+              <option value="scheduled">Scheduled</option>
+            </select>
           </div>
         </div>
       </div>
@@ -185,16 +150,21 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col">
           <div>
             <label
-              htmlFor="price"
+              htmlFor="startDate"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Inicio da Oferta
             </label>
             <input
               type="date"
-              placeholder="Price"
-              value={initialOfferData?.startDate}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              placeholder="Data de Inicio"
+              name="startDate"
+              value={
+                formDataOffer.startDate
+                  ? formDataOffer.startDate.toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
               className=" w-[154px] border p-2 rounded"
             />
           </div>
@@ -210,8 +180,13 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
             <input
               type="date"
               placeholder="Price"
-              value={initialOfferData?.endDate}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              name="endDate"
+              value={
+                formDataOffer.endDate
+                  ? formDataOffer.endDate.toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
               className="w-[154px] border p-2 rounded"
             />
           </div>
