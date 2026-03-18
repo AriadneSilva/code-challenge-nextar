@@ -1,4 +1,5 @@
 import type { Offer } from "../domain/offer/offer.entity";
+import { ActionResult } from "../types/actionResult";
 
 export type OfferState = {
   listOffers: Offer[];
@@ -10,5 +11,5 @@ export type OfferState = {
   setFilter: (filter: string) => void;
 
   fetchAllOffers: () => Promise<void>;
-  cancelOffer: (id: string) => Promise<void>;
+  cancelOffer: (idOffer: string) => Promise<ActionResult>;
 };

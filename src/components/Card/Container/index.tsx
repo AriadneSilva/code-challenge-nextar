@@ -21,7 +21,9 @@ export function Container({ offerData }: Props) {
       <span className="text-gray-500 mb-3">Estoque: {offerData.stock}</span>
 
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-gray-500">Expires in:</span>
+        <span className="text-gray-500">
+          Expires in: {offerData.endDate.toLocaleDateString("pt-br")}
+        </span>
 
         {/* <span className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
           {offerData.endDate.toDateString()}

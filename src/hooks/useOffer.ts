@@ -1,9 +1,8 @@
 import { useOfferStore } from "../store/offer.store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import type { Offer } from "../domain/offer/offer.entity";
 
 export function useOffer() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<Offer | undefined>();
   const filter = useOfferStore((state) => state.filter);
   const setFilter = useOfferStore((state) => state.setFilter);
@@ -13,17 +12,21 @@ export function useOffer() {
   const cancelOffer = useOfferStore((state) => state.cancelOffer);
   const createOffer = useOfferStore((state) => state.newOffer);
   const updateOffer = useOfferStore((state) => state.updateOffer);
+  const deleteOffer = useOfferStore((state) => state.deleteOffer);
 
-  const metrics = {
-    active: listOffers.filter((o) => o.status === "active").length,
-    scheduled: listOffers.filter((o) => o.status === "scheduled").length,
-    expired: listOffers.filter((o) => o.status === "expired").length,
-  };
+  const metrics = useMemo(
+    () => ({
+      active: listOffers.filter((o) => o.status === "active").length,
+      scheduled: listOffers.filter((o) => o.status === "scheduled").length,
+      expired: listOffers.filter((o) => o.status === "expired").length,
+    }),
+    [listOffers],
+  );
 
-  const filteredOffers =
-    filter === "All"
-      ? listOffers
-      : listOffers.filter((offer) => offer.status === filter);
+  const filteredOffers = useMemo(() => {
+    if (filter === "All") return listOffers;
+    return listOffers.filter((offer) => offer.status === filter);
+  }, [listOffers, filter]);
 
   useEffect(() => {
     if (listOffers.length === 0) {
@@ -35,11 +38,10 @@ export function useOffer() {
     listOffers,
     cancelOffer,
     createOffer,
-    isModalOpen,
-    setIsModalOpen,
     selectedOffer,
     setSelectedOffer,
     updateOffer,
+    deleteOffer,
     filteredOffers,
     filter,
     setFilter,

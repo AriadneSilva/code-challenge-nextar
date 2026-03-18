@@ -1,13 +1,14 @@
 import type { Offer } from "../domain/offer/offer.entity";
+import type { ActionResult } from "../types/actionResult";
 
 export type OfferAction = {
-  newOffer: (addedOffer: Offer) => void;
+  newOffer: (addedOffer: Offer) => Promise<ActionResult>;
 
   selectOffer: (selectedOffer: Offer) => void;
 
   // setOffer: (setedOffer: Offer[] | null) => void;
 
-  updateOffer: (updatedOffer: Offer) => void;
+  updateOffer: (updatedOffer: Offer) => Promise<ActionResult>;
 
-  deleteOffer: (idOffer: string) => void;
+  deleteOffer: (idOffer: string) => Promise<ActionResult>;
 };

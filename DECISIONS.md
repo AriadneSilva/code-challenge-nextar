@@ -80,7 +80,7 @@ A store foi dividida em diferentes arquivos com responsabilidades específicas:
 - **selectors**: funções utilizadas para leitura otimizada do estado
 - **types**: definição dos tipos utilizados pela store
 
-Estrutura adotada:
+A estrutura adotada agora segue o princípio de responsabilidade única e engloba a testabilidade e escalabilidade da aplicação.
 
 
 ## Custom Hooks Strategy
@@ -101,18 +101,22 @@ Foi implementado o hook `useOffers` para realizar o controle, permitindo que a a
 
 ### Contexto
 
-    Entre as regras do desafio, é citado a necessidade de lidar com a sicronização de dados e atualizações considerando uma integração com o AWS Amplify.
+    Entre as regras do desafio, é citado a necessidade de lidar com a sincronização de dados e atualizações considerando uma integração com o AWS Amplify.
 
-    Mesmo não sendo disponibilizado nenhum endpoint para ser utilizado o backend, optei por criar a estrutura completa de comunição com backend caso haja integração futura.
+    Mesmo não sendo disponibilizado nenhum endpoint para ser utilizado o backend, optei por criar a estrutura completa de comunicação com backend caso haja integração futura.
         
 
 ### Decisão
 
-    Foi criada uma pasta `api` responsável por simular uma camada de comunicação com backend, contendo funções assíncronas responsáveis por manipular os dados das ofertas, simulando chamadas de rede com possivel delays inclusive.
+    Foi criada uma pasta `api` responsável por simular uma camada de comunicação com backend, contendo funções assíncronas responsáveis por manipular os dados das ofertas, simulando chamadas de rede com possíveis delays inclusive.
 
     Funções implementadas:
 
     - fetchAllOffers
+    - cancelOfferAPI
+    - deleteOfferAPI
+    - createOfferAPI
+    - updateOfferAPI
     
     Essas funções utilizam os dados mockados da aplicação, retornando Promises e simulando latência de rede assim a aplicação interage com os dados como se estivesse consumindo um backend real.
 
@@ -120,4 +124,55 @@ Foi implementado o hook `useOffers` para realizar o controle, permitindo que a a
 
     A api foi criada para manter a separação clara entre a interface do usuário, o gerenciamento dos estados e o acesso aos dados.
     Dessa forma seguindo todas as decisões anteriormente tomadas no projeto, fica garantido a organização e facilidade em futuras modificações do projeto e até mesmo adaptação de back end com o AWS Amplify.
+
+## Concurrency & Version Control
+
+    De acordo com a necessidade do projeto de evitar sobrescrita de dados quando vários usuários atualizam o mesmo dado, foi adotado um controle de concorrência baseado em versionamento através do campo `version`.
+    Sendo assim a atualização segue o fluxo:
+
+    - A versão atual é comparada com a versão armazenada
+    - Caso haja divergência a operação é rejeitada evitando sobrescrita em dados desatualizados
+    - Caso seja válido, a atualização é aplicada e o campo é incrementado
+
+    Assim as alterações não sobrescrevem dados inconsistentes, a validação e o incremento da versão estão na camada service
+
+## Optimistic UI Strategy
+
+   A estratégia do Optimisc UI foi adotada nas ações de modificação de estado.
+
+   Sendo assim nas funções que alteram a lista de ofertas (adição, atualização, cancelamento e exclusão) o fluxo acontece seguinte forma:
     
+    - O estado atual da lista é salvo antes de qualquer ação
+    - A lógica da função é implementada e a interface atualizada imediatamente
+    - A operação assíncrona é realizada
+    - Em caso de falha, o estado salvo no primeiro passo, é restaurado realizando o rollback
+
+  Esse fluxo permite que a aplicação se mantenha responsiva mesmo com delay de rede e principalmente reduz a latência percebida pelo usuário.
+
+### Trade-offs:
+   Possibilidade de inconsistência temporária, utilizando o rollback
+
+## Data Synchronization Strategy
+
+   A camada de api mockada anteriormente criada, é utilizada para tratar um ambiente com várias fontes de atualização e comportamento assíncrono.
+
+   A sincronização dos dados é baseada em:
+
+    - Atualizações otimistas para responsividade
+    - Controle de versão para consistência
+    - Simulação de latência para representar chamadas reais
+
+   Essa abordagem simula cenários reais de concorrência e prepara a aplicação para ambientes distribuídos.  
+
+## Testing Strategy
+
+Foram implementados testes unitários cobrindo as principais regras de negócio da aplicação.
+
+Os testes incluem:
+
+- Validações da entidade Offer
+- Regras de cálculo de desconto
+- Controle de versionamento
+- Atualizações da store
+
+Essa abordagem garante confiabilidade e reduz riscos de regressão nas partes críticas do sistema.

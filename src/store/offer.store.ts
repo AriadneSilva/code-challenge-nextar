@@ -1,8 +1,15 @@
 import { create } from "zustand";
 import type { OfferState } from "./offer.type";
 import type { OfferAction } from "./offer.action";
-import { fetchAllOffers, cancelOffer } from "../api/offerAPI";
+import {
+  fetchAllOffers,
+  cancelOfferAPI,
+  deleteOfferAPI,
+  createOfferAPI,
+  updateOfferAPI,
+} from "../api/offerAPI";
 import { checkVersion, incrementVersion } from "../domain/offer/offer.service";
+import type { ActionResult } from "../types/actionResult";
 
 type OfferStore = OfferState & OfferAction;
 
@@ -29,36 +36,69 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
 
     set({
       listOffers: actualOffers.map((offer) =>
-        offer.id === id ? { ...offer, status: "expired" } : offer,
+        offer.id === id
+          ? {
+              ...offer,
+              status: "expired",
+              updatedAt: new Date(),
+              endDate: new Date(),
+            }
+          : offer,
       ),
     });
 
     try {
-      await cancelOffer(id);
+      await cancelOfferAPI(id);
+      return {
+        success: true,
+        message: "Oferta cancelada com sucesso",
+      };
     } catch {
       set({ listOffers: actualOffers });
+      return {
+        success: false,
+        message: "Erro ao cancelar oferta",
+      };
     }
   },
 
-  newOffer(addedOffer) {
+  newOffer: async (addedOffer) => {
+    const actualOffers = get().listOffers;
+
     addedOffer.id = get().listOffers.length.toString();
     addedOffer.version = 1;
     addedOffer.updatedAt = new Date();
 
     set((state) => ({ listOffers: [...state.listOffers, addedOffer] }));
+
+    try {
+      await createOfferAPI(addedOffer);
+      return {
+        success: true,
+        message: "Oferta criada com sucesso",
+      };
+    } catch {
+      set({ listOffers: actualOffers });
+      return {
+        success: false,
+        message: "Erro ao criar oferta",
+      };
+    }
   },
 
   selectOffer(selectedOffer) {
     set(() => ({ selectedOffer: selectedOffer }));
   },
 
-  updateOffer(updatedOffer) {
-    const lastOffer = get().listOffers.filter(
+  updateOffer: async (updatedOffer) => {
+    const actualOffers = get().listOffers;
+
+    const lastOffer = get().listOffers.find(
       (offer) => offer.id === updatedOffer.id,
     );
 
     try {
-      checkVersion(lastOffer[0].version, updatedOffer.version);
+      checkVersion(lastOffer.version, updatedOffer.version);
 
       updatedOffer.version = incrementVersion(updatedOffer.version);
 
@@ -67,14 +107,40 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
           offer.id === updatedOffer.id ? updatedOffer : offer,
         ),
       }));
+
+      await updateOfferAPI(updatedOffer);
+
+      return {
+        success: true,
+        message: "Oferta atualizada com sucesso",
+      };
     } catch (e) {
-      console.log("Peguei o erro", e);
+      console.log("Erro", e);
+      set({ listOffers: actualOffers });
+      return {
+        success: false,
+        message: "Erro ao atualizar oferta",
+      };
     }
   },
 
-  deleteOffer(idOffer) {
+  deleteOffer: async (idOffer) => {
+    const actualOffers = get().listOffers;
     set((state) => ({
       listOffers: state.listOffers.filter((offer) => offer.id != idOffer),
     }));
+    try {
+      await deleteOfferAPI(idOffer);
+      return {
+        success: true,
+        message: "Oferta deletada com sucesso",
+      };
+    } catch {
+      set({ listOffers: actualOffers });
+      return {
+        success: false,
+        message: "Erro ao deletar oferta",
+      };
+    }
   },
 }));

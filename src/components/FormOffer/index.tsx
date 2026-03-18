@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import type { Offer, OfferFormData } from "../../domain/offer/offer.entity";
-import { useOffer } from "../../hooks/useOffer";
+
 
 type Props = {
   initialOfferData?: Offer;
-  onSuccess?: () => void;
+  onSubmit: (data: Offer, action: string) => void;
 };
 
-export function FormOffer({ initialOfferData, onSuccess }: Props) {
-  const { createOffer, updateOffer } = useOffer();
-
+export function FormOffer({ initialOfferData, onSubmit }: Props) {
   const [formDataOffer, setFormDataOffer] = useState<OfferFormData>({
     id: initialOfferData?.id || "",
     version: initialOfferData?.version || 0,
@@ -47,28 +45,89 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
       [name]: parseValue(name, value),
     }));
   }
+  async function handleImageUpload(file: File) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = reject;
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Selecione uma imagem válida");
+      return;
+    }
+
+    const imageUrl = await handleImageUpload(file);
+
+    setFormDataOffer((prev) => ({
+      ...prev,
+      urlImage: imageUrl,
+    }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    //onSubmit(formDataOffer as Offer);
+
     if (initialOfferData) {
-      await updateOffer(formDataOffer as Offer);
+      onSubmit(formDataOffer as Offer, "update");
     } else {
-      await createOffer(formDataOffer as Offer);
+      onSubmit(formDataOffer as Offer, "new");
     }
 
-    onSuccess?.();
+    // onSuccess?.();
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input
-        placeholder="Title"
-        name="title"
-        value={formDataOffer.title}
-        onChange={handleChange}
-        className="border p-2 rounded"
-      />
+      <div>
+        <label
+          htmlFor="title"
+          className="block mb-1 text-sm font-medium text-heading"
+        >
+          Nome do produto
+        </label>
+        <input
+          name="title"
+          value={formDataOffer.title}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="imagem"
+          className="block mb-1 text-sm font-medium text-heading"
+        >
+          Imagem
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="border p-2 rounded"
+        />
+
+        {formDataOffer.urlImage && (
+          <img
+            src={formDataOffer.urlImage}
+            alt="Preview"
+            className="w-32 h-32 object-cover rounded border"
+          />
+        )}
+      </div>
       <div className="flex flex-row gap-1">
         <div className="flex flex-col mr-2">
           <div>
@@ -127,7 +186,7 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col">
           <div>
             <label
-              htmlFor="Status"
+              htmlFor="status"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Status
@@ -172,7 +231,7 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
         <div className="flex flex-col">
           <div>
             <label
-              htmlFor="price"
+              htmlFor="endDate"
               className="block mb-1 text-sm font-medium text-heading"
             >
               Fim da Oferta
@@ -194,7 +253,7 @@ export function FormOffer({ initialOfferData, onSuccess }: Props) {
       </div>
 
       <button type="submit" className="bg-blue-600 text-white rounded p-2 mt-2">
-        Save
+        Salvar
       </button>
     </form>
   );

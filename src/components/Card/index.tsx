@@ -2,21 +2,14 @@ import type { Offer } from "../../domain/offer/offer.entity";
 import { ImageContainer } from "./ImageContainer";
 import { Container } from "./Container";
 import { useOffer } from "../../hooks/useOffer";
-import { Modal } from "../Modal";
 
 type Props = {
   offerData: Offer;
+  onOpenModal: () => void;
+  onCancel: (id: string) => void;
 };
 
-export function Card({ offerData }: Props) {
-  const {
-    cancelOffer,
-    setIsModalOpen,
-    setSelectedOffer,
-    isModalOpen,
-    selectedOffer,
-  } = useOffer();
-
+export function Card({ offerData, onOpenModal, onCancel }: Props) {
   return (
     <>
       <div className="flex gap-8 p-6 bg-white rounded-2xl shadow-lg">
@@ -31,18 +24,17 @@ export function Card({ offerData }: Props) {
           <div className="flex flex-col flex-1">
             <div className="flex gap-3">
               <button
-                className="bg-black text-white px-5 py-2 rounded-lg"
+                className="bg-blue-700 text-white px-5 py-2 rounded-lg"
                 onClick={() => {
-                  setIsModalOpen(true);
-                  setSelectedOffer(offerData);
+                  onOpenModal();
                 }}
               >
                 Editar
               </button>
 
               <button
-                className="bg-gray-900 text-gray-400 px-5 py-2 rounded-lg"
-                onClick={() => cancelOffer(offerData.id)}
+                className="bg-blue-700 text-white px-5 py-2 rounded-lg"
+                onClick={() => onCancel(offerData.id)}
               >
                 Cancelar
               </button>
@@ -50,11 +42,6 @@ export function Card({ offerData }: Props) {
           </div>
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        offerData={selectedOffer}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }

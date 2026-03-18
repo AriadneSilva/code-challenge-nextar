@@ -8,7 +8,21 @@ export async function fetchAllOffers(): Promise<Offer[]> {
   return [...mockOffers];
 }
 
-export async function cancelOffer(id: string): Promise<boolean> {
+export async function createOfferAPI(offer: Offer): Promise<boolean> {
   await delay(500);
   return true;
 }
+export async function updateOfferAPI(offer: Offer): Promise<boolean> {
+  await delay(500);
+  return true;
+}
+export async function deleteOfferAPI(id: string): Promise<boolean> {
+  await delay(500);
+  return true;
+}
+export async function cancelOfferAPI(id: string): Promise<boolean> {
+  await delay(500);
+  return true;
+}
+
+
