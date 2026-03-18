@@ -184,6 +184,10 @@ A solução foi pensada para ser facilmente escalável e adaptável para integra
 
 ---
 
+## 🔗 Live Demo
+
+https://code-challenge-nextar-i9ao.vercel.app/
+
 ## 👩‍💻 Autor
 
 Desenvolvido por Ariadne Silva
