@@ -1,7 +1,6 @@
 import type { Offer } from "../../domain/offer/offer.entity";
 import { ImageContainer } from "./ImageContainer";
 import { Container } from "./Container";
-import { useOffer } from "../../hooks/useOffer";
 
 type Props = {
   offerData: Offer;

@@ -1,5 +1,5 @@
 import type { Offer } from "../domain/offer/offer.entity";
-import { ActionResult } from "../types/actionResult";
+import type { ActionResult } from "../types/actionResult";
 
 export type OfferState = {
   listOffers: Offer[];

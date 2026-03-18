@@ -1,7 +1,7 @@
 import type { Offer } from "../../domain/offer/offer.entity";
 import { FormOffer } from "../FormOffer";
 import { useEffect, useRef } from "react";
-import { useOffer } from "../../hooks/useOffer";
+
 
 type Props = {
   isOpen: boolean;

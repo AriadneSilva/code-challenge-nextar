@@ -9,7 +9,7 @@ import {
   updateOfferAPI,
 } from "../api/offerAPI";
 import { checkVersion, incrementVersion } from "../domain/offer/offer.service";
-import type { ActionResult } from "../types/actionResult";
+
 
 type OfferStore = OfferState & OfferAction;
 
@@ -93,12 +93,12 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
   updateOffer: async (updatedOffer) => {
     const actualOffers = get().listOffers;
 
-    const lastOffer = get().listOffers.find(
+    const lastOffer = get().listOffers.filter(
       (offer) => offer.id === updatedOffer.id,
     );
 
     try {
-      checkVersion(lastOffer.version, updatedOffer.version);
+      checkVersion(lastOffer[0].version, updatedOffer.version);
 
       updatedOffer.version = incrementVersion(updatedOffer.version);
 
