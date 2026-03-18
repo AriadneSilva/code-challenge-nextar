@@ -1,73 +1,189 @@
-# React + TypeScript + Vite
+# 🚀 Code Challenge — Nextar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação desenvolvida como solução para o desafio técnico de Frontend, com foco em arquitetura, gerenciamento de estado, regras de negócio e experiência do usuário.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Visão Geral
 
-## React Compiler
+O projeto consiste em um sistema de gerenciamento de ofertas, permitindo:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Criação de ofertas
+* Edição de ofertas existentes
+* Cancelamento com rollback
+* Filtros por status
+* Feedback visual de ações (toast)
 
-## Expanding the ESLint configuration
+A aplicação foi construída com foco em **separação de responsabilidades**, **previsibilidade de estado** e **boas práticas de engenharia frontend**.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧠 Arquitetura
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+A estrutura foi organizada seguindo princípios de domínio e separação de camadas:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+ ├── api/                # Comunicação externa (simulada)
+ ├── components/         # Componentes de UI
+ ├── domain/             # Regras de negócio (entity, service, validation)
+ ├── hooks/              # Hooks customizados
+ ├── pages/              # Páginas da aplicação
+ ├── store/              # Estado global (Zustand)
+ ├── tests/              # Testes unitários
+ └── types/              # Tipagens compartilhadas
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 🔹 Decisões principais
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+* **Zustand** para gerenciamento de estado global
+* Separação entre:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  * UI (components)
+  * Regras de negócio (domain)
+  * Estado (store)
+* Uso de **ActionResult** para padronização de respostas das ações
+
+---
+
+## ⚙️ Funcionalidades
+
+### ✅ CRUD de Ofertas
+
+* Criação e edição via modal
+* Cancelamento com controle de estado
+
+### 🔄 Optimistic UI + Rollback
+
+* Atualização imediata da UI
+* Reversão em caso de erro na operação
+
+### 🧩 Filtros
+
+* All / Ativas / Agendadas / Expiradas
+* Controle visual do estado ativo
+
+### 📣 Feedback ao usuário
+
+* Toast para sucesso e erro
+* UX reativa às ações
+
+### 📱 Responsividade
+
+* Modal adaptado para telas menores
+* Layout flexível
+
+---
+
+## 🧪 Testes
+
+Foram implementados testes unitários para:
+
+* Regras de negócio (`offer.service`)
+* Validações (`offer.validation`)
+* Store (`offer.store`)
+
+Objetivo:
+
+* Garantir previsibilidade
+* Cobrir regras críticas do domínio
+
+---
+
+## 🧠 Padrões de Engenharia
+
+### 🔹 Separação de responsabilidades
+
+* **FormOffer** → coleta dados
+* **Modal** → estrutura visual
+* **Dashboard** → orquestra fluxo
+* **useOffer** → regra de negócio
+
+---
+
+### 🔹 ActionResult Pattern
+
+Padronização de retorno das ações:
+
+```ts
+type ActionResult = {
+  success: boolean;
+  message: string;
+};
 ```
+
+Permite:
+
+* Desacoplamento entre UI e lógica
+* Facilidade de integração com feedback (toast)
+* Testabilidade
+
+---
+
+### 🔹 Controle de estado
+
+* Zustand para estado global
+* Hooks customizados para abstração (`useOffer`, `useToast`)
+* Evita prop drilling desnecessário
+
+---
+
+## 📄 Documentação
+
+* `DECISIONS.md` → decisões técnicas e trade-offs
+* `Prompt.md` → uso de IA como ferramenta de produtividade
+
+---
+
+## 🤖 Uso de IA
+
+A IA foi utilizada como suporte para:
+
+* Refinamento de arquitetura
+* Sugestões de boas práticas
+* Ajustes de UI/UX e responsividade
+* Estruturação de documentação
+
+Todas as decisões de engenharia, modelagem e implementação foram conduzidas de forma autoral.
+
+---
+
+## 🚀 Como rodar o projeto
+
+```bash
+# instalar dependências
+npm install
+
+# rodar projeto
+npm run dev
+```
+
+---
+
+## 🛠️ Tecnologias
+
+* React
+* TypeScript
+* Zustand
+* TailwindCSS
+* Vite
+* Jest / Testing Library
+
+---
+
+## 📌 Considerações finais
+
+O foco principal desta implementação foi:
+
+* Clareza arquitetural
+* Separação de responsabilidades
+* Previsibilidade de estado
+* Experiência do usuário
+
+A solução foi pensada para ser facilmente escalável e adaptável para integração com APIs reais.
+
+---
+
+## 👩‍💻 Autor
+
+Desenvolvido por Ariadne Silva
